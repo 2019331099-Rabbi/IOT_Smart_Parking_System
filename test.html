@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Smart Parking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <style>
+      /* Set up the main container */
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      /* Set up the parking lot */
+      .parking-lot {
+        position: relative;
+        width: 400px;
+        height: 200px;
+        background-color: #e0e0e0;
+        border: 2px solid black;
+      }
+
+      /* Set up the parking spaces */
+      .parking-space {
+        position: absolute;
+        width: 48%;
+        height: 100%;
+        top: 0;
+        border: 1px solid black;
+        background-color: #2b2828;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Set up the parking lines */
+      .parking-line {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        border-left: 1px dashed black;
+      }
+
+      /* Position the second parking space */
+      .parking-space.right {
+        right: 0;
+      }
+
+      /* Position the parking lines */
+      .parking-line.left {
+        left: 25%;
+      }
+
+      .parking-line.right {
+        right: 25%;
+      }
+
+      /* Set up the car images */
+      .car-image {
+        display: block;
+        max-width: 80%;
+        max-height: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper blue-grey darken-4">
+        <a href="#" class="brand-logo center">Smart Parking System</a>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="parking-lot">
+        <div class="parking-space">
+          <img class="car-image" id="s1" src="green_car.png" alt="Car 1" />
+        </div>
+        <div class="parking-space right">
+          <img class="car-image" id="s2" src="red_car.png" alt="Car 2" />
+        </div>
+        <div class="parking-line left"></div>
+        <div class="parking-line right"></div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      const s1 = document.querySelector("#s1");
+      const s2 = document.querySelector("#s2");
+      const url = "http://192.168.4.1";
+      const getSlotInfo = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `${url}/getSlotInfo`);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            console.log(response.slot1, response.slot2);
+            if (response.slot1) {
+              s1.style.display = "block";
+            } else {
+              s1.style.display = "none";
+            }
+            if (response.slot2) {
+              s2.style.display = "block";
+            } else {
+              s2.style.display = "none";
+            }
+          }
+        };
+        xhr.send();
+      };
+
+      setInterval(getSlotInfo, 1000);
+    </script>
+  </body>
+</html>
